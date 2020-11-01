@@ -80,12 +80,12 @@ contract SimpleBank {
     // Use the appropriate global variables to get the transaction sender and value
     // Emit the appropriate event
     // Users should be enrolled before they can make deposits
-    function deposit(uint depositAmount) public payable returns (uint) {
+    function deposit() public payable returns (uint) {
         /* Add the amount to the user's balance, call the event associated with a deposit,
           then return the balance of the user */
          require(enrolled[msg.sender] == true);
-         balances[msg.sender] += depositAmount;
-         emit LogDepositMade(msg.sender, depositAmount);
+         balances[msg.sender] += msg.value;
+         emit LogDepositMade(msg.sender, msg.value);
          return balances[msg.sender];
     }
 
@@ -100,6 +100,7 @@ contract SimpleBank {
            to the user attempting to withdraw.
            return the user's balance.*/
         require(balances[msg.sender] >= withdrawAmount);
+        msg.sender.transfer(withdrawAmount);
         balances[msg.sender] -= withdrawAmount;
         emit LogWithdrawal(msg.sender, withdrawAmount, balances[msg.sender]);
         return balances[msg.sender];
